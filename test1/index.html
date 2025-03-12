@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin và Khảo sát</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --background-color: #f0f8ff;
+            --text-color: #333;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
+            --light-color: #ecf0f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 30px auto 0;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .survey {
+            display: none;
+        }
+
+        .survey.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .question-group {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .question:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .question p {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        .error {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            background-color: var(--success-color);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .summary {
+            display: none;
+            margin-top: 30px;
+            background-color: var(--light-color);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .summary h3 {
+            text-align: left;
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+
+        .summary p {
+            margin-bottom: 10px;
+        }
+
+        .color-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: #333;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test </h1>
+        
+        <!-- <div class="color-options">
+            <div class="color-option" style="background-color: #f0f8ff;" data-color="#f0f8ff" data-primary="#3498db" data-secondary="#2980b9"></div>
+            <div class="color-option" style="background-color: #f8f9fa;" data-color="#f8f9fa" data-primary="#6c5ce7" data-secondary="#5e52c8"></div>
+            <div class="color-option" style="background-color: #e8f5e9;" data-color="#e8f5e9" data-primary="#27ae60" data-secondary="#219653"></div>
+            <div class="color-option" style="background-color: #fff8e1;" data-color="#fff8e1" data-primary="#f39c12" data-secondary="#e67e22"></div>
+            <div class="color-option" style="background-color: #ffebee;" data-color="#ffebee" data-primary="#e74c3c" data-secondary="#c0392b"></div>
+        </div> -->
+        
+        <div id="personalInfo">
+            <h2>LOGIN</h2>
+            <form id="infoForm">
+                <div class="form-group">
+                    <label for="fullName">Họ và tên:</label>
+                    <input type="text" id="fullName" placeholder="Nguyễn Văn A" required>
+                    <div class="error" id="fullNameError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dob">Ngày tháng năm sinh:</label>
+                    <input type="date" id="dob" required>
+                    <div class="error" id="dobError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cccd">Căn cước công dân:</label>
+                    <input type="text" id="cccd" placeholder="012345678901" required>
+                    <div class="error" id="cccdError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Địa chỉ thường trú:</label>
+                    <textarea id="address" rows="3" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" required></textarea>
+                    <div class="error" id="addressError"></div>
+                </div>
+                
+                <button type="submit" id="submitInfo">Tiếp tục</button>
+            </form>
+        </div>
+        
+        <div id="survey" class="survey">
+            <h2>Khảo sát (40 câu hỏi)</h2>
+            
+            <!-- Nhóm 1: Đúng/Sai -->
+            <div class="question-group">
+                <h3>Nhóm 1: Lựa chọn Đúng/Sai</h3>
+                
+                <div class="question">
+                    <p>1. Hà Nội là thủ đô của Việt Nam.</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q1_Đúng" name="q1" value="Đúng">
+                            <label for="q1_Đúng">Đúng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q1_false" name="q1" value="false">
+                            <label for="q1_false">Sai</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>2. Việt Nam có 64 tỉnh thành.</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q2_Đúng" name="q2" value="Đúng">
+                            <label for="q2_Đúng">Đúng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2_false" name="q2" value="false">
+                            <label for="q2_false">Sai</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>3. Sông Hồng chảy qua thành phố Hồ Chí Minh.</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q3_Đúng" name="q3" value="Đúng">
+                            <label for="q3_Đúng">Đúng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q3_false" name="q3" value="false">
+                            <label for="q3_false">Sai</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>4. Việt Nam nằm ở khu vực Đông Nam Á.</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q4_Đúng" name="q4" value="Đúng">
+                            <label for="q4_Đúng">Đúng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q4_false" name="q4" value="false">
+                            <label for="q4_false">Sai</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>5. Tiếng Anh là ngôn ngữ chính thức của Việt Nam.</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q5_Đúng" name="q5" value="Đúng">
+                            <label for="q5_Đúng">Đúng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5_false" name="q5" value="false">
+                            <label for="q5_false">Sai</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>6. Việt Nam có biên giới với Trung Quốc, Lào và Campuchia.</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q6_Đúng" name="q6" value="Đúng">
+                            <label for="q6_Đúng">Đúng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6_false" name="q6" value="false">
+                            <label for="q6_false">Sai</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>7. Phở là món ăn truyền thống của Việt Nam.</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q7_Đúng" name="q7" value="Đúng">
+                            <label for="q7_Đúng">Đúng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q7_false" name="q7" value="false">
+                            <label for="q7_false">Sai</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>8. Việt Nam nằm ở bán cầu nam.</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q8_Đúng" name="q8" value="Đúng">
+                            <label for="q8_Đúng">Đúng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q8_false" name="q8" value="false">
+                            <label for="q8_false">Sai</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>9. Việt Nam đã từng vô địch World Cup.</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q9_Đúng" name="q9" value="Đúng">
+                            <label for="q9_Đúng">Đúng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q9_false" name="q9" value="false">
+                            <label for="q9_false">Sai</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>10. Vịnh Hạ Long là một trong bảy kỳ quan thiên nhiên của thế giới.</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q10_Đúng" name="q10" value="Đúng">
+                            <label for="q10_Đúng">Đúng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q10_false" name="q10" value="false">
+                            <label for="q10_false">Sai</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="question-group">
+                
+                <h3>Nhóm 2: Chọn 1 trong 4 đáp án</h3>
+
+                <div class="question">
+                    <p>11. Kênh đào Ben Gurion được đề xuất để kết nối những vùng nào?</p>
+                    <div class="options">
+                        <div class="option"><input type="radio" id="q11_a" name="q11" value="a"><label for="q11_a">Biển Đỏ và Biển Chết</label></div>
+                        <div class="option"><input type="radio" id="q11_b" name="q11" value="b"><label for="q11_b">Biển Đỏ và Địa Trung Hải</label></div>
+                        <div class="option"><input type="radio" id="q11_c" name="q11" value="c"><label for="q11_c">Biển Chết và Địa Trung Hải</label></div>
+                        <div class="option"><input type="radio" id="q11_d" name="q11" value="d"><label for="q11_d">Hồ Victoria và Biển Đỏ</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>12. Quốc gia nào đã đề xuất xây dựng kênh đào Ben Gurion?</p>
+                    <div class="options">
+                        <div class="option"><input type="radio" id="q12_a" name="q12" value="a"><label for="q12_a">Ai Cập</label></div>
+                        <div class="option"><input type="radio" id="q12_b" name="q12" value="b"><label for="q12_b">Israel</label></div>
+                        <div class="option"><input type="radio" id="q12_c" name="q12" value="c"><label for="q12_c">Jordan</label></div>
+                        <div class="option"><input type="radio" id="q12_d" name="q12" value="d"><label for="q12_d">Ả Rập Xê Út</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>13. Kênh đào Ben Gurion được đề xuất nhằm thay thế kênh đào nào?</p>
+                    <div class="options">
+                        <div class="option"><input type="radio" id="q13_a" name="q13" value="a"><label for="q13_a">Kênh đào Panama</label></div>
+                        <div class="option"><input type="radio" id="q13_b" name="q13" value="b"><label for="q13_b">Kênh đào Suez</label></div>
+                        <div class="option"><input type="radio" id="q13_c" name="q13" value="c"><label for="q13_c">Kênh đào Kiel</label></div>
+                        <div class="option"><input type="radio" id="q13_d" name="q13" value="d"><label for="q13_d">Kênh đào Corinth</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>14. Kênh đào Ben Gurion sẽ đi qua sa mạc nào?</p>
+                    <div class="options">
+                        <div class="option"><input type="radio" id="q14_a" name="q14" value="a"><label for="q14_a">Sa mạc Sahara</label></div>
+                        <div class="option"><input type="radio" id="q14_b" name="q14" value="b"><label for="q14_b">Sa mạc Negev</label></div>
+                        <div class="option"><input type="radio" id="q14_c" name="q14" value="c"><label for="q14_c">Sa mạc Gobi</label></div>
+                        <div class="option"><input type="radio" id="q14_d" name="q14" value="d"><label for="q14_d">Sa mạc Thar</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>15. Một trong những lợi ích chính của kênh đào Ben Gurion là gì?</p>
+                    <div class="options">
+                        <div class="option"><input type="radio" id="q15_a" name="q15" value="a"><label for="q15_a">Rút ngắn thời gian vận chuyển</label></div>
+                        <div class="option"><input type="radio" id="q15_b" name="q15" value="b"><label for="q15_b">Cung cấp nước ngọt</label></div>
+                        <div class="option"><input type="radio" id="q15_c" name="q15" value="c"><label for="q15_c">Giảm chi phí du lịch</label></div>
+                        <div class="option"><input type="radio" id="q15_d" name="q15" value="d"><label for="q15_d">Tạo ra khu công nghiệp</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>16. Tại sao kênh đào Ben Gurion chưa được xây dựng?</p>
+                    <div class="options">
+                        <div class="option"><input type="radio" id="q16_a" name="q16" value="a"><label for="q16_a">Chi phí quá cao</label></div>
+                        <div class="option"><input type="radio" id="q16_b" name="q16" value="b"><label for="q16_b">Xung đột chính trị</label></div>
+                        <div class="option"><input type="radio" id="q16_c" name="q16" value="c"><label for="q16_c">Không khả thi</label></div>
+                        <div class="option"><input type="radio" id="q16_d" name="q16" value="d"><label for="q16_d">Tất cả các lý do trên</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>17. Nếu được xây dựng, kênh đào Ben Gurion sẽ ảnh hưởng nhiều nhất đến nước nào?</p>
+                    <div class="options">
+                        <div class="option"><input type="radio" id="q17_a" name="q17" value="a"><label for="q17_a">Ai Cập</label></div>
+                        <div class="option"><input type="radio" id="q17_b" name="q17" value="b"><label for="q17_b">Jordan</label></div>
+                        <div class="option"><input type="radio" id="q17_c" name="q17" value="c"><label for="q17_c">Ả Rập Xê Út</label></div>
+                        <div class="option"><input type="radio" id="q17_d" name="q17" value="d"><label for="q17_d">Libya</label></div>
+                    </div>
+                </div>
+
+
+                
+                <div class="question">
+                    <p>18. Đâu là di sản văn hóa thế giới tại Việt Nam?</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q18_a" name="q18" value="a">
+                            <label for="q18_a">Vịnh Hạ Long</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q18_b" name="q18" value="b">
+                            <label for="q18_b">Phố cổ Hội An</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q18_c" name="q18" value="c">
+                            <label for="q18_c">Phong Nha-Kẻ Bàng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q18_d" name="q18" value="d">
+                            <label for="q18_d">Tất cả đều đúng</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>19. Đâu là loại nhạc cụ truyền thống của Việt Nam?</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q19_a" name="q19" value="a">
+                            <label for="q19_a">Đàn bầu</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q19_b" name="q19" value="b">
+                            <label for="q19_b">Piano</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q19_c" name="q19" value="c">
+                            <label for="q19_c">Guitar</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q19_d" name="q19" value="d">
+                            <label for="q19_d">Saxophone</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>20. Bộ phim "The Scent of Green Papaya" (Mùi đu đủ xanh) được đạo diễn bởi ai?</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q20_a" name="q20" value="a">
+                            <label for="q20_a">Trần Anh Hùng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q20_b" name="q20" value="b">
+                            <label for="q20_b">Việt Linh</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q20_c" name="q20" value="c">
+                            <label for="q20_c">Nguyễn Quang Dũng</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q20_d" name="q20" value="d">
+                            <label for="q20_d">Charlie Nguyễn</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nhóm 3: Chọn nhiều đáp án -->
+            <div class="question-group">
+                <h3>Nhóm 3: Chọn nhiều đáp án</h3>
+                
+                <div class="question">
+                    <p>21. Những tỉnh nào giáp với Trung Quốc? (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q21_a" name="q21" value="a">
+                            <label for="q21_a">Lào Cai</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q21_b" name="q21" value="b">
+                            <label for="q21_b">Hà Giang</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q21_c" name="q21" value="c">
+                            <label for="q21_c">Nghệ An</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q21_d" name="q21" value="d">
+                            <label for="q21_d">Cao Bằng</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>22. Các món ăn nào có nguồn gốc từ miền Bắc Việt Nam? (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q22_a" name="q22" value="a">
+                            <label for="q22_a">Phở</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q22_b" name="q22" value="b">
+                            <label for="q22_b">Bún chả</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q22_c" name="q22" value="c">
+                            <label for="q22_c">Bánh xèo</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q22_d" name="q22" value="d">
+                            <label for="q22_d">Chả cá Lã Vọng</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>23. Các món ăn nào có nguồn gốc từ miền Bắc Kỳ Việt Nam? (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q22_a" name="q22" value="a">
+                            <label for="q22_a">Phở</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q22_b" name="q22" value="b">
+                            <label for="q22_b">Bún chả</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q22_c" name="q22" value="c">
+                            <label for="q22_c">Bánh xèo</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q22_d" name="q22" value="d">
+                            <label for="q22_d">Chả cá Lã Vọng</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p>24.  (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q24_a" name="q24" value="a">
+                            <label for="q24_a">Bún bò Huế</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q24_b" name="q24" value="b">
+                            <label for="q24_b">Mì Quảng</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q24_c" name="q24" value="c">
+                            <label for="q24_c">Cao lầu</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q24_d" name="q24" value="d">
+                            <label for="q24_d">Bánh cuốn</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p>24. Những nhà hoạt động dân quyền nổi tiếng nào đã góp phần vào phong trào chống phân biệt chủng tộc? (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q24_a" name="q24" value="a">
+                            <label for="q24_a">Martin Luther King Jr.</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q24_b" name="q24" value="b">
+                            <label for="q24_b">Malcolm X</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q24_c" name="q24" value="c">
+                            <label for="q24_c">Harriet Tubman</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q24_d" name="q24" value="d">
+                            <label for="q24_d">Abraham Lincoln</label>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="question">
+                    <p>25. Những thể loại nhạc nào có nguồn gốc từ cộng đồng người da đen? (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q25_a" name="q25" value="a">
+                            <label for="q25_a">Jazz</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q25_b" name="q25" value="b">
+                            <label for="q25_b">Blues</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q25_c" name="q25" value="c">
+                            <label for="q25_c">Hip-hop</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q25_d" name="q25" value="d">
+                            <label for="q25_d">Rock</label>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="question">
+                    <p>26. Những vận động viên da đen nào được coi là huyền thoại trong thể thao? (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q26_a" name="q26" value="a">
+                            <label for="q26_a">Michael Jordan</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q26_b" name="q26" value="b">
+                            <label for="q26_b">Serena Williams</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q26_c" name="q26" value="c">
+                            <label for="q26_c">Usain Bolt</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q26_d" name="q26" value="d">
+                            <label for="q26_d">Cristiano Ronaldo</label>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="question">
+                    <p>27. Những bộ phim nào nổi tiếng vì phản ánh cuộc sống và văn hóa người da đen? (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q27_a" name="q27" value="a">
+                            <label for="q27_a">Black Panther</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q27_b" name="q27" value="b">
+                            <label for="q27_b">12 Years a Slave</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q27_c" name="q27" value="c">
+                            <label for="q27_c">Moonlight</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q27_d" name="q27" value="d">
+                            <label for="q27_d">Titanic</label>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="question">
+                    <p>28. Những ngày kỷ niệm nào liên quan đến lịch sử người da đen? (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q28_a" name="q28" value="a">
+                            <label for="q28_a">Black History Month</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q28_b" name="q28" value="b">
+                            <label for="q28_b">Juneteenth</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q28_c" name="q28" value="c">
+                            <label for="q28_c">Martin Luther King Jr. Day</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q28_d" name="q28" value="d">
+                            <label for="q28_d">Fourth of July</label>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="question">
+                    <p>29. Những phát minh nào được sáng chế bởi người da đen? (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q29_a" name="q29" value="a">
+                            <label for="q29_a">Đèn tín hiệu giao thông</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q29_b" name="q29" value="b">
+                            <label for="q29_b">Máy điều hòa</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q29_c" name="q29" value="c">
+                            <label for="q29_c">Hệ thống lọc nước</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q29_d" name="q29" value="d">
+                            <label for="q29_d">Bóng đèn điện</label>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="question">
+                    <p>30. Những nhà văn da đen nào nổi tiếng trên thế giới? (Chọn tất cả các đáp án đúng)</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="checkbox" id="q30_a" name="q30" value="a">
+                            <label for="q30_a">Maya Angelou</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q30_b" name="q30" value="b">
+                            <label for="q30_b">Toni Morrison</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q30_c" name="q30" value="c">
+                            <label for="q30_c">Chimamanda Ngozi Adichie</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="q30_d" name="q30" value="d">
+                            <label for="q30_d">J.K. Rowling</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>    
+                
+
+
+
+            <div class="question-group">
+                <h3>Nhóm 4: Câu hỏi tự luận</h3>
+            
+                <div class="question">
+                    <p>31. Người Do Thái có vai trò như thế nào trong lịch sử thế giới?</p>
+                    <textarea id="q31" name="q31" rows="4" placeholder="Viết câu trả lời của bạn tại đây..."></textarea>
+                </div>
+            
+                <div class="question">
+                    <p>32. Những giá trị văn hóa và tôn giáo nào giúp cộng đồng Do Thái duy trì bản sắc qua hàng nghìn năm?</p>
+                    <textarea id="q32" name="q32" rows="4" placeholder="Viết câu trả lời của bạn tại đây..."></textarea>
+                </div>
+            
+                <div class="question">
+                    <p>33. Một số nhân vật Do Thái có ảnh hưởng lớn đến khoa học và công nghệ là ai? Họ đã đóng góp gì?</p>
+                    <textarea id="q33" name="q33" rows="4" placeholder="Viết câu trả lời của bạn tại đây..."></textarea>
+                </div>
+            
+                <div class="question">
+                    <p>34. Bạn có biết về những nguyên tắc kinh doanh và tài chính của người Do Thái không? Hãy chia sẻ.</p>
+                    <textarea id="q34" name="q34" rows="4" placeholder="Viết câu trả lời của bạn tại đây..."></textarea>
+                </div>
+            
+                <div class="question">
+                    <p>35. Người Do Thái đã phải đối mặt với những thách thức lịch sử nào? Làm thế nào họ vượt qua?</p>
+                    <textarea id="q35" name="q35" rows="4" placeholder="Viết câu trả lời của bạn tại đây..."></textarea>
+                </div>
+            
+                <div class="question">
+                    <p>36. Chủ nghĩa Phục quốc Do Thái (Zionism) là gì? Nó ảnh hưởng như thế nào đến lịch sử thế giới?</p>
+                    <textarea id="q36" name="q36" rows="4" placeholder="Viết câu trả lời của bạn tại đây..."></textarea>
+                </div>
+            
+                <div class="question">
+                    <p>37. Tại sao nhiều người Do Thái được xem là thành công trong các lĩnh vực như khoa học, tài chính và nghệ thuật?</p>
+                    <textarea id="q37" name="q37" rows="4" placeholder="Viết câu trả lời của bạn tại đây..."></textarea>
+                </div>
+            
+                <div class="question">
+                    <p>38. Những bài học gì bạn có thể học được từ cách tư duy và lối sống của người Do Thái?</p>
+                    <textarea id="q38" name="q38" rows="4" placeholder="Viết câu trả lời của bạn tại đây..."></textarea>
+                </div>
+            
+                <div class="question">
+                    <p>39. Kinh Torah có ảnh hưởng như thế nào đến triết lý sống của người Do Thái?</p>
+                    <textarea id="q39" name="q39" rows="4" placeholder="Viết câu trả lời của bạn tại đây..."></textarea>
+                </div>
+            
+                <div class="question">
+                    <p>40. Bạn nghĩ gì về tinh thần đoàn kết trong cộng đồng người Do Thái?</p>
+                    <textarea id="q40" name="q40" rows="4" placeholder="Viết câu trả lời của bạn tại đây..."></textarea>
+                </div>
+            
+            </div>
+            <button id="submitQuiz">Submit</buttton> 
+                
+<script src="js.js"></script>

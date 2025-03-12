@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài kiểm tra trắc nghiệm</title>
+<!-- <link rel="stylesheet" href="/LINHTINH/style.css"> -->
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Thiết lập chiều cao viewport đầy đủ */
+    display: flex; /* Kích hoạt flexbox */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    background-color: #f4f4f4; /* Màu nền cho trang */
+}
+
+html, body {
+    height: auto; /* Cho phép chiều cao tự động mở rộng theo nội dung */
+    min-height: 100vh; /* Đảm bảo chiều cao tối thiểu bằng với chiều cao viewport */
+    background : url("background.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+#questionsContainer {
+    width: 80%; /* Điều chỉnh chiều rộng nếu cần */
+    max-height: 80vh; /* Giới hạn chiều cao tối đa để cho phép cuộn */
+    overflow-y: auto; /* Cho phép cuộn dọc nếu nội dung vượt quá max-height */
+    margin: 20px auto; /* Căn giữa container trong viewport */
+    padding: 20px; /* Khoảng cách trong cho container */
+    background-color: #fff; /* Màu nền cho container */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Thêm bóng cho đẹp */
+    border-radius: 10px; /* Bo tròn các góc */
+}
+
+
+
+#infoForm {
+    background-color: #ffffff; /* Màu nền cho form nhập thông tin */
+    padding: 20px;
+    border: 2px solid #007BFF; /* Viền xanh nổi bật */
+    border-radius: 10px; /* Bo góc cho form */
+    width: 300px; /* Chiều rộng của form */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Bóng đổ nhẹ */
+}
+
+input[type="text"], input[type="date"], textarea, button {
+    padding: 8px;
+    margin-top: 10px;
+    width: 100%; /* Điều chỉnh chiều rộng phù hợp với form */
+    display: block; /* Đảm bảo các phần tử được hiển thị trên từng dòng riêng */
+    border: 1px solid #ccc; /* Viền xám cho input và textarea */
+    border-radius: 4px; /* Bo góc cho input và textarea */
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước tổng thể */
+}
+
+.question {
+    background: linear-gradient(to right, #00ff00, #38383a);
+
+    border: 1px solid #ccc; /* Đường viền mỏng, màu xám nhạt */
+    padding: 15px;
+    margin-bottom: 20px; /* Khoảng cách giữa các câu hỏi */
+    border-radius: 8px; /* Bo góc cho khung câu hỏi */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Tạo bóng đổ nhẹ */
+}
+
+label {
+    display: block; /* Đảm bảo mỗi tùy chọn được hiển thị trên từng dòng riêng */
+    margin: 5px 0;
+    cursor: pointer; /* Thay đổi con trỏ khi di chuột qua nhãn */
+}
+
+textarea {
+    height: 100px;
+    padding: 10px; /* Khoảng cách lề trong */
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #0056b3; /* Màu nền cho nút */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Tạo hiệu ứng chuyển màu khi hover */
+}
+
+button:hover {
+    background-color: #003d82; /* Thay đổi màu nền khi di chuột qua nút */
+}
+
+</style>
+<body>
+<div class="container">
+<div id="infoForm">
+    <input type="text" id="fullname" placeholder="Nhập họ và tên">
+    <input type="date" id="dob" placeholder="Ngày sinh">
+    
+    <input type="text" id="studentID" placeholder="CCCD">
+    <input type="text" id="studentID" placeholder="Địa chỉ thường trú">
+    <input type="text" id="class" placeholder="Lớp">
+    <button id="startBtn">Bắt đầu làm bài</button>
+</div>
+</div>
+<div id="questionsContainer" style="display:none;"></div>
+<script>
+    document.getElementById('startBtn').addEventListener('click', function() {
+    document.getElementById('infoForm').style.display = 'none';
+    document.getElementById('questionsContainer').style.display = 'block';
+    loadQuestions();
+});
+
+function loadQuestions() {
+    const container = document.getElementById('questionsContainer');
+    container.innerHTML = '';
+    const allQuestions = [...questionsGroup1, ...questionsGroup2, ...questionsGroup3, ...questionsGroup4];
+
+    allQuestions.forEach((question, index) => {
+        const questionBlock = document.createElement('div');
+        questionBlock.className = 'question';
+
+        const questionText = document.createElement('p');
+        questionText.textContent = `Câu ${index + 1}: ${question.text}`;
+        questionBlock.appendChild(questionText);
+
+        if (question.options) { // Xử lý các câu hỏi lựa chọn
+            const optionsContainer = document.createElement('div');
+            question.options.forEach((option, idx) => {
+                const optionLabel = document.createElement('label');
+                const optionInput = document.createElement('input');
+                optionInput.type = question.correct instanceof Array ? 'checkbox' : 'radio';
+                optionInput.name = 'question' + index;
+                optionInput.value = idx;
+                optionLabel.appendChild(optionInput);
+                optionLabel.append(option);
+                optionsContainer.appendChild(optionLabel);
+            });
+            questionBlock.appendChild(optionsContainer);
+        } else { // Xử lý câu hỏi tự luận
+            const textArea = document.createElement('textarea');
+            textArea.name = 'question' + index;
+            textArea.placeholder = "Nhập câu trả lời của bạn tại đây...";
+            questionBlock.appendChild(textArea);
+        }
+
+        container.appendChild(questionBlock);
+    });
+
+    const submitBtn = document.createElement('button');
+    submitBtn.textContent = 'Nộp bài';
+    submitBtn.onclick = evaluateAnswers;
+    container.appendChild(submitBtn);
+}
+
+function evaluateAnswers() {
+    let score = 0;
+    let totalQuestions = 0;
+    const allQuestions = [...questionsGroup1, ...questionsGroup2, ...questionsGroup3, ...questionsGroup4];
+    allQuestions.forEach((question, index) => {
+        const inputs = document.querySelectorAll(`input[name="question${index}"]`);
+        const textArea = document.querySelector(`textarea[name="question${index}"]`);
+        let correct = true;
+
+        if (inputs.length > 0) { // Đối với các câu hỏi có lựa chọn
+            totalQuestions++;
+            const userAnswers = Array.from(inputs).filter(input => input.checked).map(input => parseInt(input.value));
+            const correctAnswers = Array.isArray(question.correct) ? question.correct : [question.correct];
+            correct = correctAnswers.every(answer => userAnswers.includes(answer)) && correctAnswers.length === userAnswers.length;
+        } else if (textArea) { // Đối với câu hỏi tự luận
+            totalQuestions++;
+            // Ví dụ này giả định rằng mọi câu trả lời tự luận là đúng.
+            // Thực tế, bạn cần một cách để đánh giá câu trả lời dựa trên tiêu chí nhất định.
+            correct = textArea.value.trim().length > 0;
+        }
+
+        if (correct) {
+            score++;
+        }
+    });
+
+    alert(`Bạn đã đạt được ${score} trên tổng số ${totalQuestions} câu hỏi.`);
+}
+
+// Đảm bảo nút nộp bài đã được tạo và sự kiện đã được gán:
+document.addEventListener('DOMContentLoaded', function() {
+    const submitBtn = document.createElement('button');
+    submitBtn.textContent = 'Nộp bài';
+    submitBtn.addEventListener('click', evaluateAnswers);
+    document.getElementById('questionsContainer').appendChild(submitBtn);
+});
+
+
+const questionsGroup1 = [
+    { text: "HTML là một ngôn ngữ lập trình.", options: ["Đúng", "Sai"], correct: 1 },
+    { text: "CSS là ngôn ngữ thiết kế cho web.", options: ["Đúng", "Sai"], correct: 0 },
+    { text: "JavaScript không thể sử dụng để xây dựng backend.", options: ["Đúng", "Sai"], correct: 1 },
+    { text: "React là một thư viện JavaScript.", options: ["Đúng", "Sai"], correct: 0 },
+    { text: "MySQL là một hệ quản trị cơ sở dữ liệu quan hệ.", options: ["Đúng", "Sai"], correct: 0 },
+    { text: "HTTP đứng cho HyperText Transfer Protocol.", options: ["Đúng", "Sai"], correct: 0 },
+    { text: "XML và JSON là các ngôn ngữ lập trình.", options: ["Đúng", "Sai"], correct: 1 },
+    { text: "Python là ngôn ngữ lập trình đa năng.", options: ["Đúng", "Sai"], correct: 0 },
+    { text: "Java là ngôn ngữ lập trình chỉ dùng cho di động.", options: ["Đúng", "Sai"], correct: 1 },
+    { text: "Bootstrap là một framework của PHP.", options: ["Đúng", "Sai"], correct: 1 }
+];
+
+const questionsGroup2 = [
+    { text: "Ngôn ngữ lập trình nào được sử dụng để phát triển các ứng dụng iOS?", options: ["Java", "Swift", "C#", "JavaScript"], correct: 1 },
+    { text: "Thành phần không phải của mô hình MVC là gì?", options: ["Model", "View", "Controller", "Service"], correct: 3 },
+    { text: "Đâu là cổng mặc định cho HTTP?", options: ["80", "8080", "443", "3000"], correct: 0 },
+    { text: "Đâu không phải là một loại Loop trong lập trình?", options: ["For", "While", "Do-while", "Repeat-until"], correct: 3 },
+    { text: "Thư viện nào được dùng phổ biến để xử lý dữ liệu trong JavaScript?", options: ["Lodash", "Moment.js", "Express", "NumPy"], correct: 0 },
+    { text: "Đâu là phần mềm quản lý phiên bản?", options: ["Git", "Docker", "Webpack", "Jira"], correct: 0 },
+    { text: "Khái niệm 'inheritance' được dịch là gì trong lập trình?", options: ["Đa hình", "Kế thừa", "Bao bọc", "Trừu tượng hóa"], correct: 1 },
+    { text: "Đâu là cơ sở dữ liệu NoSQL phổ biến?", options: ["MySQL", "Oracle", "MongoDB", "SQL Server"], correct: 2 },
+    { text: "Phương thức HTTP nào không được sử dụng để gửi dữ liệu?", options: ["GET", "POST", "DELETE", "PUT"], correct: 0 },
+    { text: "Đâu là framework JavaScript?", options: ["Flask", "Django", "Angular", "Laravel"], correct: 2 }
+];
+
+const questionsGroup3 = [
+    { text: "Các ngôn ngữ lập trình phía server nào phổ biến? (chọn tất cả đáp án đúng)", options: ["JavaScript", "Python", "HTML", "Java"], correct: [0, 1, 3] },
+    { text: "Công nghệ nào được sử dụng trong phát triển Front-end? (chọn tất cả đáp án đúng)", options: ["React", "MongoDB", "Angular", "Vue"], correct: [0, 2, 3] },
+    { text: "Những ngôn ngữ nào được sử dụng trong Data Science? (chọn tất cả đáp án đúng)", options: ["Python", "R", "JavaScript", "Java"], correct: [0, 1] },
+    { text: "Các công cụ nào hỗ trợ testing cho phát triển phần mềm? (chọn tất cả đáp án đúng)", options: ["Jenkins", "Selenium", "Git", "Jira"], correct: [1, 3] },
+    { text: "Những ngôn ngữ nào có thể sử dụng cho lập trình hướng đối tượng? (chọn tất cả đáp án đúng)", options: ["Java", "Python", "C#", "C++"], correct: [0, 1, 2, 3] },
+    { text: "Các tính năng nào là đặc trưng của HTML5? (chọn tất cả đáp án đúng)", options: ["Canvas", "Video", "Geo-location", "div"], correct: [0, 1, 2] },
+    { text: "Frameworks nào thích hợp cho phát triển ứng dụng di động? (chọn tất cả đáp án đúng)", options: ["React Native", "Flutter", "Angular", "Vue"], correct: [0, 1] },
+    { text: "Các dịch vụ nào được cung cấp bởi AWS? (chọn tất cả đáp án đúng)", options: ["EC2", "Lambda", "DynamoDB", "Photoshop"], correct: [0, 1, 2] },
+    { text: "Công nghệ nào được sử dụng trong Big Data? (chọn tất cả đáp án đúng)", options: ["Hadoop", "Spark", "Linux", "MongoDB"], correct: [0, 1, 3] },
+    { text: "Những công nghệ nào thuộc về DevOps? (chọn tất cả đáp án đúng)", options: ["Docker", "Kubernetes", "Nagios", "COBOL"], correct: [0, 1, 2] }
+];
+
+const questionsGroup4 = [
+    { text: "Hãy giải thích về mô hình MVC là gì và nó được sử dụng như thế nào trong phát triển web?" },
+    { text: "Thảo luận về ưu và nhược điểm của việc sử dụng microservices so với kiến trúc monolithic." },
+    { text: "Mô tả cách thức hoạt động của HTTPS." },
+    { text: "Hãy mô tả cách JavaScript hoạt động với call stack và event loop." },
+    { text: "Giải thích khái niệm 'virtual DOM' và cách nó được sử dụng trong React." },
+    { text: "Thảo luận về cách thức hoạt động của garbage collection trong Java." },
+    { text: "Mô tả sự khác biệt giữa authentication và authorization." },
+    { text: "Hãy giải thích khái niệm 'Responsive Web Design'." },
+    { text: "Giải thích cơ chế hoạt động của WebSockets và cách nó khác biệt so với HTTP." },
+    { text: "Mô tả các bước cơ bản trong quy trình Continuous Integration/Continuous Deployment (CI/CD)." }
+];
+
+</script>
+</body>
+</html>
