@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kết Quả Khảo Sát</title>
+    <title>Kết Quả Bài Thi</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
+            max-width: 600px;
             margin: auto;
         }
         h1 {
@@ -30,6 +30,30 @@
             font-size: 24px;
             font-weight: bold;
             color: #e74c3c;
+        }
+        .feedback {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #27ae60;
+        }
+        .answers-list {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .answers-list p {
+            font-size: 16px;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .correct-answer {
+            background: #e8f5e9;
+            border-left: 5px solid #2ecc71;
+        }
+        .wrong-answer {
+            background: #ffebee;
+            border-left: 5px solid #e74c3c;
         }
         .btn {
             display: inline-block;
@@ -47,21 +71,43 @@
 </head>
 <body>
     <div class="result-container">
-        <h1>Kết Quả Khảo Sát</h1>
+        <h1>Kết Quả Bài Thi</h1>
         <p>Bạn đã trả lời đúng <span class="score" id="correctAnswers">0</span> trên <span id="totalQuestions">0</span> câu.</p>
         <p>Tỷ lệ đúng: <span id="percentage">0</span>%</p>
+        <p class="feedback" id="feedback"></p>
+        
+        <div class="answers-list">
+            <h3>Các câu trả lời của bạn:</h3>
+            <div id="answersList"></div>
+        </div>
+
         <a href="index.html" class="btn">Làm lại</a>
     </div>
 
     <script>
         // Lấy dữ liệu từ Local Storage
-        const correctAnswers = localStorage.getItem("correctAnswers") || 0;
-        const totalQuestions = localStorage.getItem("totalQuestions") || 0;
+        const correctAnswers = parseInt(localStorage.getItem("correctAnswers") || "0");
+        const totalQuestions = parseInt(localStorage.getItem("totalQuestions") || "0");
         const percentage = ((correctAnswers / totalQuestions) * 100).toFixed(2);
 
         document.getElementById("correctAnswers").textContent = correctAnswers;
         document.getElementById("totalQuestions").textContent = totalQuestions;
         document.getElementById("percentage").textContent = percentage;
+
+        // Đưa ra phản hồi theo số điểm đạt được
+        
+        // Hiển thị danh sách câu trả lời
+        const answersList = document.getElementById("answersList");
+        let allAnswers = JSON.parse(localStorage.getItem("allAnswers")) || [];
+
+        allAnswers.forEach(q => {
+            const div = document.createElement("p");
+            div.classList.add(q.isCorrect ? "correct-answer" : "wrong-answer");
+            div.innerHTML = `<strong>Câu ${q.question}:</strong> 
+                            Bạn chọn: <span style="color: ${q.isCorrect ? 'green' : 'red'};">${q.selected}</span> 
+                            | Đáp án đúng: <span style="color: green;">${q.correct}</span>`;
+            answersList.appendChild(div);
+        });
     </script>
 </body>
 </html>
