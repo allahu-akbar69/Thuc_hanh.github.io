@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết Quả Khảo Sát</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 50px;
+        }
+        .result-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: auto;
+        }
+        h1 {
+            color: #3498db;
+        }
+        p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <h1>Kết Quả Khảo Sát</h1>
+        <p>Bạn đã trả lời đúng <span class="score" id="correctAnswers">0</span> trên <span id="totalQuestions">0</span> câu.</p>
+        <p>Tỷ lệ đúng: <span id="percentage">0</span>%</p>
+        <a href="index.html" class="btn">Làm lại</a>
+    </div>
+
+    <script>
+        // Lấy dữ liệu từ Local Storage
+        const correctAnswers = localStorage.getItem("correctAnswers") || 0;
+        const totalQuestions = localStorage.getItem("totalQuestions") || 0;
+        const percentage = ((correctAnswers / totalQuestions) * 100).toFixed(2);
+
+        document.getElementById("correctAnswers").textContent = correctAnswers;
+        document.getElementById("totalQuestions").textContent = totalQuestions;
+        document.getElementById("percentage").textContent = percentage;
+    </script>
+</body>
+</html>
